@@ -12,23 +12,17 @@ client = MongoClient(uri, server_api=ServerApi('1'))
 db = client['Database1']
 collections = db['DataSiswa']
 
-# Data yang ingin dimasukkan
-# murid_1 = {'Nama':'Evan', 'Jurusan':'Teknologi Sains Data', 'IPK': 4}
-# murid_2 = {'Nama':'Ryan', 'Jurusan':'Teknologi Sains Data', 'IPK': 4}
-# murid_3 = {'Nama':'Oki', 'Jurusan':'Teknologi Sains Data', 'IPK': 4}
-
-# isi = collections.find()
-# for i in isi:
-#     print(i)
-
+# Fungsi Menyimpan Data di Database
 def store_data(data):
     hasil = collections.insert_one(data)
     return hasil.inserted_id
 
+# Fungsi Mengambil Data dari Database
 def get_data():
     get_result = collections.find()
     return get_result
 
+# API untuk Menyimpan data ke Database 
 @app.route('/sensor1', methods = ['POST'])
 def save_sensor_data():
     if request.method == "POST":
@@ -36,11 +30,13 @@ def save_sensor_data():
         temperature = body['temperature']
         humidity = body['humidity']
         timestamp = body['timestamp']
+        motion = body['motion']
 
         data_sensor = {
             'temperature':temperature,
             'humidity':humidity,
             'timestamp':timestamp,
+            "motion":motion
         }
 
         store_data(data_sensor)
@@ -48,4 +44,4 @@ def save_sensor_data():
             'message':"Berhasil Menyimpan Data!"
         }
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", debug=True, port=5000)
